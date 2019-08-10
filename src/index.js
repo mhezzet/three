@@ -10,7 +10,7 @@ let model
 const aspect = window.innerWidth / window.innerHeight
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000)
-camera.position.z = 10
+camera.position.z = 15
 
 const renderer = new THREE.WebGLRenderer({ antialias: true })
 renderer.setPixelRatio(window.devicePixelRatio)
@@ -34,22 +34,22 @@ loader.load('model.glb', gltf => {
 //lights
 const sphere = new THREE.SphereBufferGeometry(0.03)
 
-const light1 = new THREE.PointLight(0xff0040, 0.2, 50)
+const light1 = new THREE.PointLight(0xff0040, 0.5, 10)
 light1.add(
   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xff0040 }))
 )
 scene.add(light1)
-const light2 = new THREE.PointLight(0x0040ff, 0.2, 50)
+const light2 = new THREE.PointLight(0x0040ff, 0.5, 10)
 light2.add(
   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0x0040ff }))
 )
 scene.add(light2)
-const light3 = new THREE.PointLight(0x80ff80, 0.2, 50)
+const light3 = new THREE.PointLight(0x80ff80, 0.5, 10)
 light3.add(
   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0x80ff80 }))
 )
 scene.add(light3)
-const light4 = new THREE.PointLight(0xffaa00, 0.2, 50)
+const light4 = new THREE.PointLight(0xffaa00, 0.5, 10)
 light4.add(
   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffaa00 }))
 )
