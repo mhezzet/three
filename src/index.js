@@ -5,17 +5,25 @@ import Stats from 'stats.js'
 
 //init
 const clock = new THREE.Clock()
-let model
+let model, mixer, animations
 
 const aspect = window.innerWidth / window.innerHeight
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000)
-camera.position.z = 15
+camera.position.z = 10
 
 const renderer = new THREE.WebGLRenderer({ antialias: true })
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.getElementById('canvas').appendChild(renderer.domElement)
+
+//loading manger
+const loadingManager = new THREE.LoadingManager(() => {
+  const loadingScreen = document.getElementById('loading-screen')
+  loadingScreen.classList.add('fade-out')
+
+  loadingScreen.addEventListener('transitionend', e => e.target.remove())
+})
 
 //stats
 const fps = new Stats()
@@ -23,33 +31,46 @@ fps.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.getElementById('canvas').appendChild(fps.dom)
 
 //loading model
-const loader = new GLTFLoader()
+const loader = new GLTFLoader(loadingManager)
 
 loader.load('model.glb', gltf => {
+  console.log(gltf)
+  animations = gltf.animations
   model = gltf.scene
 
-  scene.add(gltf.scene)
+  // mixer = new THREE.AnimationMixer(model)
+  // mixer.clipAction(animations[0]).play()
+
+  model.scale.multiplyScalar(0.04)
+  model.position.y -= 5
+
+  scene.add(model)
 })
 
-//lights
-const sphere = new THREE.SphereBufferGeometry(0.03)
+//add texture
 
-const light1 = new THREE.PointLight(0xff0040, 0.5, 10)
+//lights
+const sphere = new THREE.SphereBufferGeometry(0.1)
+
+// const ambian = new THREE.AmbientLight(0xffffff, 0.2)
+// scene.add(ambian)
+
+const light1 = new THREE.PointLight(0xff0040, 1.1, 10)
 light1.add(
   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xff0040 }))
 )
 scene.add(light1)
-const light2 = new THREE.PointLight(0x0040ff, 0.5, 10)
+const light2 = new THREE.PointLight(0x0040ff, 1.1, 10)
 light2.add(
   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0x0040ff }))
 )
 scene.add(light2)
-const light3 = new THREE.PointLight(0x80ff80, 0.5, 10)
+const light3 = new THREE.PointLight(0x80ff80, 1.1, 10)
 light3.add(
   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0x80ff80 }))
 )
 scene.add(light3)
-const light4 = new THREE.PointLight(0xffaa00, 0.5, 10)
+const light4 = new THREE.PointLight(0xffaa00, 1.1, 10)
 light4.add(
   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffaa00 }))
 )
@@ -72,9 +93,10 @@ function animate() {
 
   const time = Date.now() * 0.0005
 
-  var delta = clock.getDelta()
+  const delta = clock.getDelta()
   if (model) model.rotation.y -= 0.5 * delta
 
+  if (mixer !== undefined) mixer.update(delta)
   fps.update()
 
   light1.position.x = Math.sin(time * 0.4) * 3
