@@ -13,6 +13,7 @@
     "parcel-bundler": "^1.12.3"
   },
   "dependencies": {
+    "stats.js": "^0.17.0",
     "three": "^0.107.0"
   }
 }
